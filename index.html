@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>LABOTSPIN-SKY - Voos, Hotéis e Pacotes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --primary: #0052cc;
+            --primary-dark: #003d99;
+            --accent: #ffb300;
+            --bg: #f4f6fb;
+            --text: #1f2933;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        header {
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .nav {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.95rem;
+        }
+        .logo span {
+            padding: 0.2rem 0.45rem;
+            border-radius: 999px;
+            border: 1px solid var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+        }
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+        .pill {
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+        }
+        .btn-outline {
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        main {
+            max-width: 1120px;
+            margin: 1.25rem auto 2.5rem auto;
+            padding: 0 1.25rem;
+        }
+        .search-section {
+            background: linear-gradient(135deg, #003d99, #0052cc);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            color: #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        .search-section::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.09) 0, transparent 40%),
+                radial-gradient(circle at 80% 0%, rgba(255,255,255,0.12) 0, transparent 45%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .search-inner {
+            position: relative;
+            z-index: 1;
+        }
+        .search-header {
+            margin-bottom: 1rem;
+        }
+        .search-header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+        }
+        .search-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .trip-type {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+        }
+        .trip-type span {
+            padding-bottom: 0.2rem;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        .trip-type span.active {
+            border-bottom: 2px solid var(--accent);
+            color: #fff;
+            opacity: 1;
+        }
+        form {
+            background: rgba(255,255,255,0.98);
+            border-radius: 0.9rem;
+            padding: 0.9rem;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1.4fr;
+            gap: 0.6rem;
+            align-items: end;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b7280;
+        }
+        input, select {
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            padding: 0.45rem 0.6rem;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px rgba(0,82,204,0.25);
+        }
+        .btn-search {
+            border: none;
+            border-radius: 999px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent), #ffd54f);
+            cursor: pointer;
+            color: #1f2933;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+        }
+        .btn-search span.icon {
+            font-size: 1rem;
+        }
+        .btn-search:hover {
+            filter: brightness(1.03);
+        }
+        .tags {
+            display: flex;
+            gap: 0.35rem;
+            margin-top: 0.6rem;
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+        }
+        .tags span {
+            border-radius: 999px;
+            padding: 0.18rem 0.6rem;
+            border: 1px solid rgba(255,255,255,0.35);
+            backdrop-filter: blur(4px);
+        }
+        .highlights {
+            margin-top: 1.8rem;
+        }
+        .highlights-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.75rem;
+        }
+        .highlights-header h2 {
+            font-size: 1rem;
+        }
+        .highlights-header span {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.9rem;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 0.9rem;
+            padding: 0.9rem;
+            box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+            font-size: 0.8rem;
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+        .badge {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 999px;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .price {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .card-meta {
+            color: #6b7280;
+            margin-bottom: 0.2rem;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.4rem;
+        }
+        .small-pill {
+            font-size: 0.65rem;
+            padding: 0.18rem 0.45rem;
+            border-radius: 999px;
+            background: #f3f4f6;
+        }
+        .link {
+            font-size: 0.75rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* BANNERS / "IMAGENS" PROFISSIONAIS EM CSS */
+        .ads-section {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .ads-banner-main {
+            border-radius: 1.2rem;
+            padding: 1.4rem 1.6rem;
+            margin-bottom: 1.6rem;
+            background: radial-gradient(circle at 0 0, #fbbf24, #ea580c 40%, #7c2d12 100%);
+            color: #fefce8;
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        }
+        .ads-banner-main-left h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+        .ads-banner-main-left p {
+            font-size: 0.9rem;
+            opacity: 0.94;
+            margin-bottom: 0.4rem;
+        }
+        .ads-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+        }
+        .ads-chip {
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            border: 1px solid rgba(254,243,199,0.8);
+            background: rgba(15,23,42,0.18);
+            backdrop-filter: blur(4px);
+        }
+        .ads-banner-main-right {
+            text-align: right;
+            font-size: 0.8rem;
+        }
+        .ads-price-big {
+            font-size: 1.45rem;
+            font-weight: 800;
+        }
+        .ads-price-sub {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .ads-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.35rem;
+            font-size: 0.75rem;
+        }
+        .ads-tag span {
+            font-size: 0.9rem;
+        }
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.1rem;
+            margin-bottom: 1.8rem;
+        }
+        .ads-card {
+            border-radius: 1rem;
+            padding: 1rem;
+            color: #0b1120;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(15,23,42,0.12);
+            background: radial-gradient(circle at 0 0, #e0f2fe, #eff6ff 40%, #dbeafe 100%);
+        }
+        .ads-card[data-type="hotel"] {
+            background: radial-gradient(circle at 0 0, #fef9c3, #fef3c7 40%, #fee2e2 100%);
+        }
+        .ads-card[data-type="seguro"] {
+            background: radial-gradient(circle at 0 0, #dcfce7, #bbf7d0 40%, #a7f3d0 100%);
+        }
+        .ads-card[data-type="carro"] {
+            background: radial-gradient(circle at 0 0, #e0f2fe, #bfdbfe 40%, #dbeafe 100%);
+        }
+        .ads-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .ads-card p {
+            font-size: 0.8rem;
+            margin-bottom: 0.35rem;
+        }
+        .ads-pill {
+            font-size: 0.7rem;
+            padding: 0.18rem 0.5rem;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.06);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .ads-pill span {
+            font-size: 0.9rem;
+        }
+        .ads-card::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            border: 10px solid rgba(255,255,255,0.45);
+            right: -40px;
+            bottom: -40px;
+            opacity: 0.8;
+        }
+        .card-credit-wrapper {
+            display: grid;
+            grid-template-columns: minmax(260px, 360px) minmax(220px, 1fr);
+            gap: 1.2rem;
+            align-items: center;
+        }
+        .card-credit {
+            border-radius: 1.4rem;
+            padding: 1.2rem 1.4rem;
+            background: conic-gradient(from 200deg, #0f172a, #1d4ed8, #06b6d4, #0f172a);
+            color: #e5e7eb;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 14px 28px rgba(15,23,42,0.5);
+        }
+        .card-credit::before {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(248,250,252,0.22), transparent 60%);
+            top: -60px;
+            right: -40px;
+        }
+        .card-credit-logo {
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            opacity: 0.85;
+            margin-bottom: 0.4rem;
+        }
+        .card-credit-flag {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.6rem;
+        }
+        .card-chip {
+            width: 34px;
+            height: 26px;
+            border-radius: 0.4rem;
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+            margin-bottom: 0.65rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-chip::after {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            border-radius: 0.3rem;
+            border: 1px solid rgba(55,65,81,0.35);
+        }
+        .card-number {
+            font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            letter-spacing: 0.12em;
+            font-size: 0.9rem;
+            margin-bottom: 0.55rem;
+        }
+        .card-credit-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 0.7rem;
+        }
+        .card-credit-footer strong {
+            display: block;
+            font-size: 0.8rem;
+        }
+        .card-credit-badges {
+            display: flex;
+            gap: 0.35rem;
+            font-size: 0.65rem;
+        }
+        .card-credit-badge {
+            padding: 0.18rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.7);
+            border: 1px solid rgba(148,163,184,0.8);
+        }
+        .card-credit-text {
+            font-size: 0.82rem;
+            color: #4b5563;
+        }
+
+        /* SURPRISE */
+        .surprise-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(255,255,255,0.25), rgba(15,23,42,0.98));
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            z-index: 50;
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+        }
+        .surprise-box {
+            max-width: 680px;
+            width: 100%;
+            background: rgba(15,23,42,0.96);
+            color: #f9fafb;
+            border-radius: 1.5rem;
+            padding: 2rem 1.75rem 1.75rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        .surprise-box::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background-image:
+                radial-gradient(circle at 0 0, rgba(251,191,36,0.16) 0, transparent 55%),
+                radial-gradient(circle at 100% 0, rgba(96,165,250,0.18) 0, transparent 55%);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        .surprise-inner {
+            position: relative;
+            z-index: 1;
+        }
+        .surprise-title {
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+        }
+        .surprise-title span {
+            font-size: 1.9rem;
+        }
+        .surprise-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.1rem;
+        }
+        .surprise-text p {
+            margin-bottom: 0.5rem;
+        }
+        .surprise-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+        }
+        .btn-secondary {
+            background: transparent;
+            border-radius: 999px;
+            border: 1px solid rgba(249,250,251,0.45);
+            color: #f9fafb;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: rgba(15,23,42,0.85);
+        }
+        .confetti {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .confetti span {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #fde68a;
+            opacity: 0.9;
+            animation: float 3.4s linear infinite;
+        }
+        .confetti span:nth-child(2) {
+            background: #60a5fa;
+            animation-duration: 3s;
+        }
+        .confetti span:nth-child(3) {
+            background: #fda4af;
+            animation-duration: 3.8s;
+        }
+        .confetti span:nth-child(4) {
+            background: #6ee7b7;
+            animation-duration: 3.2s;
+        }
+        .confetti span:nth-child(5) {
+            background: #f97316;
+            animation-duration: 4s;
+        }
+        @keyframes float {
+            from { transform: translateY(120vh) translateX(0); }
+            to   { transform: translateY(-10vh) translateX(12px); }
+        }
+        @media (max-width: 880px) {
+            form {
+                grid-template-columns: 1fr 1fr;
+            }
+            .field[data-wide] {
+                grid-column: span 2;
+            }
+            .btn-search {
+                width: 100%;
+            }
+            .card-credit-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            main {
+                padding: 0 1rem;
+            }
+            .nav {
+                padding: 0.6rem 1rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .search-section {
+                padding: 1.25rem;
+            }
+            .search-header h1 {
+                font-size: 1.1rem;
+            }
+            .surprise-box {
+                padding: 1.5rem 1.25rem 1.25rem;
+                border-radius: 1.25rem;
+            }
+            .surprise-title {
+                font-size: 1.3rem;
+            }
+            .surprise-text {
+                font-size: 0.9rem;
+            }
+        }
+    
+@media (max-width: 480px) {
+    .surprise-box {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        padding: 1.2rem 1rem !important;
+    }
+    .surprise-text {
+        font-size: 0.88rem !important;
+        line-height: 1.55 !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    .surprise-title {
+        font-size: 1.25rem !important;
+        line-height: 1.3 !important;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    .surprise-overlay {
+        padding: 1.2rem 0.5rem !important;
+    }
+    .surprise-box {
+        width: 100% !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        border-radius: 0.5rem !important;
+        padding: 1.2rem 1rem !important;
+        box-sizing: border-box !important;
+    }
+    .surprise-text {
+        font-size: 0.9rem !important;
+        line-height: 1.55 !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    body {
+        overflow-x: hidden !important;
+    }
+} 
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="nav">
+        <div class="logo">
+            <span>LABOTSPIN</span> SKY 
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="active">Voos</a>
+            <a href="#">Hotéis</a>
+            <a href="#">Pacotes</a>
+            <a href="#">Minhas viagens</a>
+        </nav>
+        <div class="nav-right">
+            <span style="color:#0052cc; font-weight:700;">V.XII.MMI</span>
+            <span class="pill">BRL (R$)</span>
+            <span class="pill">PT-BR</span>
+            <button class="btn-outline">Entrar</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="search-section" id="search-section">
+        <div class="search-inner">
+            <div class="search-header">
+                <h1>Encontre o próximo destino dos seus sonhos</h1>
+                <p>Compare voos, economize e viaje com tranquilidade com a LABOTSPIN-SKY.</p>
+            </div>
+
+            <div class="trip-type">
+                <span class="active">Ida e volta</span>
+                <span>Somente ida</span>
+                <span>Várias cidades</span>
+            </div>
+
+            <form id="flight-form">
+                <div class="field" data-wide>
+                    <label for="from">De</label>
+                    <input id="from" name="from" type="text" placeholder="Cidade ou aeroporto de origem" required />
+                </div>
+                <div class="field" data-wide>
+                    <label for="to">Para</label>
+                    <input id="to" name="to" type="text" placeholder="Cidade ou aeroporto de destino" required />
+                </div>
+                <div class="field">
+                    <label for="depart">Data de ida</label>
+                    <input id="depart" name="depart" type="date" required />
+                </div>
+                <div class="field">
+                    <label for="return">Data de volta</label>
+                    <input id="return" name="return" type="date" required />
+                </div>
+                <div class="field">
+                    <label for="passengers">Passageiros</label>
+                    <select id="passengers" name="passengers">
+                        <option>1 adulto</option>
+                        <option>2 adultos</option>
+                        <option>3 adultos</option>
+                        <option>2 adultos, 1 criança</option>
+                        <option>2 adultos, 2 crianças</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-search">
+                    <span class="icon">✈️</span>
+                    Buscar voos
+                </button>
+            </form>
+
+            <div class="tags">
+                <span>✈️ Promoções para Nova York</span>
+                <span>🔥 Voos em oferta hoje</span>
+                <span>⭐ Melhor custo-benefício</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="highlights">
+        <div class="highlights-header">
+            <h2>Ofertas em destaque</h2>
+            <span>Valores sujeitos a alteração e disponibilidade</span>
+        </div>
+        <div class="cards">
+            <article class="card">
+                <div class="card-top">
+                    <div>
+                        <div class="card-meta">São Paulo (GRU) → Nova York (NYC)</div>
+                        <div class="price">R$ 3.462</div>
+                    </div>
+                    <span class="badge">Mais buscado</span>
+                </div>
+                <div class="card-meta">Voos com 1 parada • Franquia de bagagem pode variar</div>
+                <div class="card-footer">
+                    <span class="small-pill">Cancelamento flexível</span>
+                    <span class="link">Ver detalhes</span>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card-top">
+                    <div>
+                        <div class="card-meta">São Paulo (GRU) → Miami (MIA)</div>
+                        <div class="price">R$ 2.950</div>
+                    </div>
+                    <span class="badge">Tarifa combinada</span>
+                </div>
+                <div class="card-meta">Conexões otimizadas para EUA • Opções de milhas</div>
+                <div class="card-footer">
+                    <span class="small-pill">Ideal para múltiplos destinos</span>
+                    <span class="link">Ver detalhes</span>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card-top">
+                    <div>
+                        <div class="card-meta">Nova York (NYC) → São Paulo (GRU)</div>
+                        <div class="price">R$ 3.280</div>
+                    </div>
+                    <span class="badge">Retorno em destaque</span>
+                </div>
+                <div class="card-meta">Voos noturnos para chegar descansado ao Brasil</div>
+                <div class="card-footer">
+                    <span class="small-pill">Horários estratégicos</span>
+                    <span class="link">Ver detalhes</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- SEÇÃO DE PROPAGANDAS PROFISSIONAIS (CSS) -->
+    <section class="ads-section">
+        <div class="ads-banner-main">
+            <div class="ads-banner-main-left">
+                <h3>Promoção exclusiva: São Paulo → Miami</h3>
+                <p>Voe para Miami com condições especiais, voos selecionados e parceiras internacionais.</p>
+                <div class="ads-chip-row">
+                    <div class="ads-chip">✔ Voos com 1 parada</div>
+                    <div class="ads-chip">✔ Parcelamento em até 10x</div>
+                    <div class="ads-chip">✔ Acúmulo de milhas bônus</div>
+                </div>
+            </div>
+            <div class="ads-banner-main-right">
+                <div class="ads-price-sub">a partir de</div>
+                <div class="ads-price-big">R$ 2.499</div>
+                <div class="ads-price-sub">ida e volta, taxas inclusas*</div>
+                <div class="ads-tag"><span>★</span> Oferta destacada LABOTSPIN-SKY</div>
+            </div>
+        </div>
+
+        <div class="ads-grid">
+            <div class="ads-card" data-type="hotel">
+                <h4>Hotéis em Nova York</h4>
+                <p>Reserve hotéis selecionados em Manhattan, Brooklyn e região com tarifas especiais.</p>
+                <div class="ads-pill"><span>🏨</span> Diárias a partir de R$ 499</div>
+            </div>
+            <div class="ads-card" data-type="seguro">
+                <h4>Seguro viagem internacional</h4>
+                <p>Plano completo com cobertura para EUA, incluindo atendimento em português.</p>
+                <div class="ads-pill"><span>🛡️</span> Até 10% OFF para reservas hoje</div>
+            </div>
+            <div class="ads-card" data-type="carro">
+                <h4>Aluguel de carro em Miami</h4>
+                <p>Retire no aeroporto e viaje com liberdade pela Flórida com parceiros selecionados.</p>
+                <div class="ads-pill"><span>🚗</span> A partir de US$ 19 por dia</div>
+            </div>
+        </div>
+
+        <div class="card-credit-wrapper">
+            <div class="card-credit">
+                <div class="card-credit-logo">LABOTSPIN SKY</div>
+                <div class="card-credit-flag">
+                    Cartão de viagem internacional
+                </div>
+                <div class="card-chip"></div>
+                <div class="card-number">5452  ••••  ••••  2026</div>
+                <div class="card-credit-footer">
+                    <div>
+                        <span>VÁLIDO ATÉ</span>
+                        <strong>06 / 26</strong>
+                    </div>
+                    <div>
+                        <span>TITULAR</span>
+                        <strong>CLIENTE LABOTSPIN</strong>
+                    </div>
+                    <div class="card-credit-badges">
+                        <div class="card-credit-badge">4x milhas</div>
+                        <div class="card-credit-badge">Sem anuidade no 1º ano</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-credit-text">
+                <strong>Cartão LABOTSPIN-SKY</strong><br>
+                Organize seus gastos da viagem em um único cartão de crédito internacional, acumule até 4x mais milhas
+                em compras relacionadas a viagens e concentre passagens, hotéis e aluguel de carro em um só lugar.
+                <br><br>
+                Sujeito à análise de crédito. Benefícios e condições podem variar conforme o perfil do cliente e o
+                parceiro emissor do cartão.
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="surprise-overlay" id="surprise-overlay">
+    <div class="surprise-box">
+        <div class="confetti">
+            <span style="left: 10%; animation-delay: 0s;"></span>
+            <span style="left: 30%; animation-delay: 0.3s;"></span>
+            <span style="left: 55%; animation-delay: 0.6s;"></span>
+            <span style="left: 75%; animation-delay: 0.9s;"></span>
+            <span style="left: 90%; animation-delay: 1.2s;"></span>
+        </div>
+        <div class="surprise-inner">
+            <div class="surprise-title">
+                <span>🎉</span> Feliz aniversário, meu amor!
+            </div>
+            <div class="surprise-text">
+                <p><strong>Feliz aniversário, meu amor!</strong></p>
+                <p>
+                    Sua passagem São Paulo para Miami e New York para São Paulo já está pronta e comprada. 
+                    Hoje você completa 24 anos, e eu não poderia estar mais feliz por viver essa fase da vida ao seu lado.
+                </p>
+                <p>
+                    Estou muito orgulhoso e feliz com a mulher que você vem se tornando. 
+                    Te conheço desde seus 17/18 anos, e seu crescimento como pessoa e como mulher é admirável. 
+                    Fico completamente apaixonado todos os dias por todos os detalhes que fazem ser quem você é, 
+                    e fico imaginando a sorte que nossos filhos irão ter de ter uma mãe como você.
+                </p>
+                <p>
+                    Eu amo viver o dia a dia com você, mesmo quando é só um dia simples 
+                    (mas essa viagem não vai ser nada simples, haha).
+                </p>
+                <p>
+                    Sempre foi um dos meus maiores sonhos te levar para os EUA. 
+                    Desde que fui em 2022, tudo o que eu conseguia imaginar era nós dois lá, vivendo aquela experiência juntos. 
+                    Agora isso vai ser real.
+                </p>
+                <p>
+                    Estar em uma Copa do Mundo também era um dos meus maiores sonhos, 
+                    mas desde que comecei a imaginar minha vida ao seu lado, 
+                    todos os meus sonhos só são completos com você do lado. 
+                    E fico completamente grato a Deus e ao mundo por me preparar e me levar a viver isso junto com você nesse momento.
+                </p>
+                <p>
+                    Obrigado por ser quem você é, obrigado por me edificar, caminhar comigo 
+                    e por deixar minha vida melhor em todos os sentidos.  
+                    Te amo em qualquer lugar do mundo, meu amor. ❤️
+                </p>
+            </div>
+
+            <div class="surprise-footer">
+                <button class="btn-secondary" id="btn-close">
+                    Voltar para a pesquisa de voos
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const form = document.getElementById("flight-form");
+        const overlay = document.getElementById("surprise-overlay");
+        const btnClose = document.getElementById("btn-close");
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            overlay.style.display = "flex";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        btnClose.addEventListener("click", function() {
+            overlay.style.display = "none";
+        });
+    })();
+</script>
+</body>
+</html>
